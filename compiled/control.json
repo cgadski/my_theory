@@ -1,0 +1,1 @@
+{"AFL": "{#Command(Space)}{PLOVER:PRIORITY_DICT:catch_return.json,commands.json,personal.json,community.json}{PLOVER:TOGGLE_DICT:+catch_return.json,+commands.json,+personal.json,+community.json}{PLOVER:TOGGLE_DICT:-numbered.py,-control.json}"}

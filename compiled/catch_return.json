@@ -1,1 +1,1 @@
-{"S-": "hello"}
+{"R-R": "{^~|\n^}{PLOVER:PRIORITY_DICT:control.json,commands.json,numbered.py}{PLOVER:TOGGLE_DICT:+control.json,+commands.json,+numbered.py}{PLOVER:TOGGLE_DICT:-personal.json,-community.json,-catch_return.json}"}

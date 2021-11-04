@@ -58,7 +58,7 @@ def lookup_numbered(key):
 def lookup(key):
     for f in [lookup_numbered]:
         try:
-            f(key)
+            return f(key)
         except KeyError:
             pass
 
