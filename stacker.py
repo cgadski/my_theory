@@ -1,48 +1,70 @@
-import json
-import shutil
-import os
+from config import states
+from os import listdir
 
-mainStack = ['literal.py', 'commands.json', 'personal.json', 'community.json']
 
-states = {
-    'CONTROL': ['user_control.json', 'control.json', 'commands.json', 'numbered.py'],
-    'INPUT': ['user_input.json'] + mainStack,
-    'INPUT_UNTIL_RETURN': ['user_control.json', 'catch_return.json'] + mainStack,
-}
+def check_states():
+    for _, config in states.items():
+        if 'stack' not in config:
+            config['stack'] = []
+        if 'name' not in config:
+            config['name'] = None
+        if 'definition_file' not in config:
+            config['definition_file'] = None
+        if 'definition_file' in config and 'definition_stack' not in config:
+            config['definition_stack'] = config['stack']
+        if 'transitions' not in config:
+            config['transitions'] = {}
 
-files = set()
-for state in states:
-    for file in states[state]:
-        files.add(file)
 
-def command_for_state(state):
-    dicts_in = states[state]
-    dicts_out = [file for file in files if file not in dicts_in]
-    dicts = lambda prefix, dicts: ','.join([prefix + file for file in dicts])
+check_states()
+
+
+def get_used_files():
+    used_files = set()
+
+    for _, config in states.items():
+        for k in ['stack', 'definition_stack']:
+            if k in config:
+                [used_files.add(d) for d in config[k]]
+
+    return used_files
+
+
+def check_files():
+    used_files = get_used_files()
+    available_files = listdir('./dictionaries')
+
+    for file in used_files:
+        if file not in available_files:
+            raise Exception(file + " is not available!")
+
+    for file in available_files:
+        if file not in available_files:
+            raise Exception(file + " is not used!")
+    
+    return used_files
+
+dictionaries = check_files()
+
+def transition_command(stack):
+    unused = [d for d in dictionaries if d not in stack]
+
+    def dicts(command, prefix, dicts): 
+        if dicts == []:
+            return ''
+        inner = ','.join([prefix + file for file in dicts])
+        return '{PLOVER:' + command + ':' + inner + '}'
     return \
-        '{PLOVER:TOGGLE_DICT:' + dicts('+', dicts_in) + '}' + \
-        '{PLOVER:PRIORITY_DICT:' + dicts('', dicts_in) + '}' + \
-        '{PLOVER:TOGGLE_DICT:' + dicts('-', dicts_out) + '}'
+        dicts('TOGGLE_DICT', '+', stack) + \
+        dicts('PRIORITY_DICT', '+', stack) + \
+        dicts('TOGGLE_DICT', '-', unused)
 
-commands = { 
-    "{STACKER:" + state + "}": command_for_state(state) for state in states }
+def name_commands():
+    commands = {}
+    for state, config in states.items():
+        if config['name'] is not None:
+            commands[config['name']] = transition_command(
+                [state + '.json'] + config['stack'])
+    return commands
 
-no_replace = set(['personal.json', 'community.json'])
-input_files = set(['user_input.json', 'user_control.json'])
-
-for file in files:
-    if file in input_files:
-        continue
-
-    print('Processing', file)
-
-    ext = file.split('.')[-1]
-    if ext == 'json' and file not in no_replace:
-        data = json.load(open(file, 'r'))
-        for key in data:
-            for command in commands:
-                data[key] = data[key].replace(command, commands[command])
-        json.dump(data, open('compiled/' + file, 'w'))
-        continue
-
-    shutil.copyfile(file, './compiled/' + file)
+print(name_commands())
