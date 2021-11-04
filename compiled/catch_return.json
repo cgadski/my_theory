@@ -1,1 +1,1 @@
-{"R-R": "{^~|\n^}{PLOVER:PRIORITY_DICT:control.json,commands.json,numbered.py}{PLOVER:TOGGLE_DICT:+control.json,+commands.json,+numbered.py}{PLOVER:TOGGLE_DICT:-personal.json,-community.json,-catch_return.json}"}
+{"R-R": "{^~|\n^}{PLOVER:PRIORITY_DICT:user_control.json,control.json,commands.json,numbered.py}{PLOVER:TOGGLE_DICT:+user_control.json,+control.json,+commands.json,+numbered.py}{PLOVER:TOGGLE_DICT:-user_input.json,-community.json,-personal.json,-catch_return.json}"}

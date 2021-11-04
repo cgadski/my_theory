@@ -5,9 +5,9 @@ import os
 mainStack = ['commands.json', 'personal.json', 'community.json']
 
 states = {
-    'CONTROL': ['control.json', 'commands.json', 'numbered.py'],
-    'INPUT': mainStack,
-    'INPUT_UNTIL_RETURN': ['catch_return.json'] + mainStack,
+    'CONTROL': ['user_control.json', 'control.json', 'commands.json', 'numbered.py'],
+    'INPUT': ['user_input.json'] + mainStack,
+    'INPUT_UNTIL_RETURN': ['user_input.json', 'catch_return.json'] + mainStack,
 }
 
 files = set()
@@ -28,10 +28,14 @@ commands = {
     "{STACKER:" + state + "}": command_for_state(state) for state in states }
 
 no_replace = set(['personal.json', 'community.json'])
-
-os.mkdir('compiled')
+input_files = set(['user_input.json', 'user_control.json'])
 
 for file in files:
+    if file in input_files:
+        continue
+
+    print('Processing', file)
+
     ext = file.split('.')[-1]
     if ext == 'json' and file not in no_replace:
         data = json.load(open(file, 'r'))
@@ -42,5 +46,3 @@ for file in files:
         continue
 
     shutil.copyfile(file, './compiled/' + file)
-
-print(files)
