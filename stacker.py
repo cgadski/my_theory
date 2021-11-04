@@ -1,3 +1,4 @@
+import json
 from config import states
 from os import listdir
 
@@ -41,15 +42,17 @@ def check_files():
     for file in available_files:
         if file not in available_files:
             raise Exception(file + " is not used!")
-    
+
     return used_files
 
+
 dictionaries = check_files()
+
 
 def transition_command(stack):
     unused = [d for d in dictionaries if d not in stack]
 
-    def dicts(command, prefix, dicts): 
+    def dicts(command, prefix, dicts):
         if dicts == []:
             return ''
         inner = ','.join([prefix + file for file in dicts])
@@ -59,12 +62,46 @@ def transition_command(stack):
         dicts('PRIORITY_DICT', '+', stack) + \
         dicts('TOGGLE_DICT', '-', unused)
 
-def name_commands():
+
+def transition_to_state(state):
+    return transition_command([state + '.json'] + states[state]['stack'])
+
+
+def transition_to_state_t(state):
+    config = states[state]
+    return transition_command(
+        [config['definition_file']] +
+        [state + '_T.json'] + config['definition_stack'])
+
+
+def global_commands():
     commands = {}
     for state, config in states.items():
         if config['name'] is not None:
-            commands[config['name']] = transition_command(
-                [state + '.json'] + config['stack'])
+            commands[config['name']] = transition_to_state(state)
     return commands
 
-print(name_commands())
+
+def control_commands(state):
+    config = states[state]
+    commands = global_commands()
+    if config['definition_file'] is not None:
+        commands['TKUPT'] = transition_to_state_t(state)
+
+    commands_t = {
+        'TA*B': '{#Tab}{^}',
+        'TAB': '{#Tab}{^}',
+        'R-R': '{^\n^}' + transition_to_state(state),
+        'TPEFBG': '{#Escape}' + transition_to_state(state)
+    }
+
+    return commands, commands_t
+
+
+for state in states:
+    commands, commands_t = control_commands(state)
+    with open('./generated/' + state + '.json', 'w') as f:
+        json.dump(commands, f, indent=4)
+    with open('./generated/' + state + '_T.json', 'w') as f:
+        json.dump(commands_t, f, indent=4)
+

@@ -1,0 +1,6 @@
+{
+    "KR-L": "{PLOVER:TOGGLE_DICT:+CONTROL.json,+control_staging.json,+control.json,+basic_commands.json,+numbered_commands.py,+no_untranslates.py}{PLOVER:PRIORITY_DICT:+CONTROL.json,+control_staging.json,+control.json,+basic_commands.json,+numbered_commands.py,+no_untranslates.py}{PLOVER:TOGGLE_DICT:-personal.json,-enter_hotkeys.py,-literal_stroke.py,-community.json}",
+    "T-T": "{PLOVER:TOGGLE_DICT:+TEXT.json,+literal_stroke.py,+basic_commands.json,+personal.json,+community.json}{PLOVER:PRIORITY_DICT:+TEXT.json,+literal_stroke.py,+basic_commands.json,+personal.json,+community.json}{PLOVER:TOGGLE_DICT:-numbered_commands.py,-control_staging.json,-enter_hotkeys.py,-no_untranslates.py,-control.json}",
+    "RA*U": "{PLOVER:TOGGLE_DICT:+RAW.json}{PLOVER:PRIORITY_DICT:+RAW.json}{PLOVER:TOGGLE_DICT:-numbered_commands.py,-personal.json,-control_staging.json,-enter_hotkeys.py,-literal_stroke.py,-no_untranslates.py,-control.json,-basic_commands.json,-community.json}",
+    "TKUPT": "{PLOVER:TOGGLE_DICT:+control_staging.json,+CONTROL_T.json,+enter_hotkeys.py,+literal_stroke.py,+basic_commands.json,+personal.json,+community.json}{PLOVER:PRIORITY_DICT:+control_staging.json,+CONTROL_T.json,+enter_hotkeys.py,+literal_stroke.py,+basic_commands.json,+personal.json,+community.json}{PLOVER:TOGGLE_DICT:-numbered_commands.py,-no_untranslates.py,-control.json}"
+}
