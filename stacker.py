@@ -2,12 +2,12 @@ import json
 import shutil
 import os
 
-mainStack = ['commands.json', 'personal.json', 'community.json']
+mainStack = ['literal.py', 'commands.json', 'personal.json', 'community.json']
 
 states = {
     'CONTROL': ['user_control.json', 'control.json', 'commands.json', 'numbered.py'],
     'INPUT': ['user_input.json'] + mainStack,
-    'INPUT_UNTIL_RETURN': ['user_input.json', 'catch_return.json'] + mainStack,
+    'INPUT_UNTIL_RETURN': ['user_control.json', 'catch_return.json'] + mainStack,
 }
 
 files = set()
@@ -20,8 +20,8 @@ def command_for_state(state):
     dicts_out = [file for file in files if file not in dicts_in]
     dicts = lambda prefix, dicts: ','.join([prefix + file for file in dicts])
     return \
-        '{PLOVER:PRIORITY_DICT:' + dicts('', dicts_in) + '}' + \
         '{PLOVER:TOGGLE_DICT:' + dicts('+', dicts_in) + '}' + \
+        '{PLOVER:PRIORITY_DICT:' + dicts('', dicts_in) + '}' + \
         '{PLOVER:TOGGLE_DICT:' + dicts('-', dicts_out) + '}'
 
 commands = { 

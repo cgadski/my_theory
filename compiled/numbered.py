@@ -48,7 +48,8 @@ def lookup_numbered(key):
             if all([
                 left_bank_stroke & stroke == pattern,
                 (stroke & right_bank_stroke) & numbers_stroke == (
-                    stroke & right_bank_stroke)
+                    stroke & right_bank_stroke),
+                (stroke & vowels_stroke) == Stroke.from_integer(0)
             ]):
                 return run_numbered_command(stroke, numbered[pattern])
 
