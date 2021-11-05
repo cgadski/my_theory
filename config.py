@@ -1,4 +1,5 @@
 mainStack = [
+    'staging.json',
     'literal_stroke.py',  # STR* for a literal stroke
     'basic_commands.json',  # everyday commands for use in edit mode
     'personal.json',  # personal English / programming dictionary
@@ -23,7 +24,7 @@ states = {
         ],
         'transitions': {
             'WREU': '{STACKER:TEXT_INPUT}',
-            'ALF': '{#Command(Space)}{STACKER:TEMP_TEXT}',
+            'AFL': '{#Command(Space)}{STACKER:TEMP_TEXT}{^}',
             'WREU': '{STACKER:TEMP_TEXT}'
         }
     },

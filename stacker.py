@@ -40,7 +40,7 @@ def check_files():
             raise Exception(file + " is not available!")
 
     for file in available_files:
-        if file not in available_files:
+        if file not in used_files:
             raise Exception(file + " is not used!")
 
     return used_files
@@ -108,7 +108,7 @@ def state_commands(state):
             'TA*B': '{#Tab}{^}',
             'TAB': '{#Tab}{^}',
             'R-R': '{^\n^}' + transition_to_state(state),
-            'TPEFBG': '{#Escape}' + transition_to_state(state)
+            'TPEFBG': '{#Escape}' + transition_to_state(state),
         }
 
     return commands, commands_t
