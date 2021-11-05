@@ -1,5 +1,7 @@
 from plover_stroke import BaseStroke
 
+LONGEST_KEY = 10
+
 
 class Stroke(BaseStroke):
     pass
@@ -23,6 +25,7 @@ def number_from_chord(stroke: Stroke):
     chars = numbers[::-1]
     number_code = ''.join(['1' if c in stroke else '0' for c in chars])
     return int(number_code, 2)
+
 
 commands = {
     'KROL': 'Control',
@@ -59,26 +62,34 @@ keys = {
     'KP*': 'X',
     'KWR*': 'Y',
     'STKPWHR*': 'Z',
+    'HOEPL': 'Home',
+    'EPBD': 'End',
+    'PWABG': 'BackSpace',
+    'RAOEUT': 'Right',
+    'TKOUPB': 'Down',
+    'HREFT': 'Left',
+    'TAB': 'Tab'
 }
 
-LONGEST_KEY = 10
 
 def lookup_key(key):
     if key in keys:
         return keys[key]
-    
+
     stroke = Stroke(key)
     n = number_from_chord(stroke)
     if stroke & ~numbers_stroke == Stroke('TPH-') and n <= 9:
         return str(number_from_chord(stroke))
     if stroke & ~numbers_stroke == Stroke('TP-'):
         return 'F' + number_from_chord(stroke)
-    
+
     raise KeyError
+
 
 def form_command(commands, key):
     return '\{#' + ''.join([c + '(' for c in commands]) + \
-        key + (')' * len(commands)) + '\}'
+        key + (')' * len(commands)) + '\}\{^\}'
+
 
 def lookup(key):
     if all([chord in commands for chord in key[:-1]]):

@@ -1,9 +1,7 @@
 {
-    "AFL": "{#Command(Space)}{^}{STACKER:INPUT_UNTIL_RETURN}",
-    "WREU": "{^}{STACKER:INPUT_UNTIL_RETURN}",
     "HOEPL": "{#Home}",
     "EPBD": "{#End}",
     "KHROES": "{#Command(W)}",
     "TPHU": "{#Command(N)}",
-    "A*BGS": "{#Command(Shift(P))}{^}{STACKER:INPUT_UNTIL_RETURN}"
+    "HRAB": "{#Alt(Tab)}{^}"
 }
