@@ -1,6 +1,0 @@
-{
-    "TA*B": "{#Tab}{^}",
-    "TAB": "{#Tab}{^}",
-    "R-R": "{^\n^}{PLOVER:TOGGLE_DICT:+RAW.json}{PLOVER:PRIORITY_DICT:+RAW.json}{PLOVER:TOGGLE_DICT:-numbered_commands.py,-personal.json,-control_staging.json,-enter_hotkeys.py,-literal_stroke.py,-no_untranslates.py,-control.json,-basic_commands.json,-community.json}",
-    "TPEFBG": "{#Escape}{PLOVER:TOGGLE_DICT:+RAW.json}{PLOVER:PRIORITY_DICT:+RAW.json}{PLOVER:TOGGLE_DICT:-numbered_commands.py,-personal.json,-control_staging.json,-enter_hotkeys.py,-literal_stroke.py,-no_untranslates.py,-control.json,-basic_commands.json,-community.json}"
-}

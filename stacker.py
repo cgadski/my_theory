@@ -1,10 +1,10 @@
 import json
-from config import states
+from config import states as state_configs
 from os import listdir
 
 
 def check_states():
-    for _, config in states.items():
+    for _, config in state_configs.items():
         if 'stack' not in config:
             config['stack'] = []
         if 'name' not in config:
@@ -23,7 +23,7 @@ check_states()
 def get_used_files():
     used_files = set()
 
-    for _, config in states.items():
+    for _, config in state_configs.items():
         for k in ['stack', 'definition_stack']:
             if k in config:
                 [used_files.add(d) for d in config[k]]
@@ -46,7 +46,14 @@ def check_files():
     return used_files
 
 
-dictionaries = check_files()
+def generated_dictionaries():
+    for state, config in state_configs.items():
+        yield state + '.json'
+        if config['definition_file'] is not None:
+            yield state + '_T.json'
+
+
+dictionaries = list(check_files()) + list(generated_dictionaries())
 
 
 def transition_command(stack):
@@ -59,16 +66,16 @@ def transition_command(stack):
         return '{PLOVER:' + command + ':' + inner + '}'
     return \
         dicts('TOGGLE_DICT', '+', stack) + \
-        dicts('PRIORITY_DICT', '+', stack) + \
+        dicts('PRIORITY_DICT', '', stack) + \
         dicts('TOGGLE_DICT', '-', unused)
 
 
 def transition_to_state(state):
-    return transition_command([state + '.json'] + states[state]['stack'])
+    return transition_command([state + '.json'] + state_configs[state]['stack'])
 
 
 def transition_to_state_t(state):
-    config = states[state]
+    config = state_configs[state]
     return transition_command(
         [config['definition_file']] +
         [state + '_T.json'] + config['definition_stack'])
@@ -76,32 +83,42 @@ def transition_to_state_t(state):
 
 def global_commands():
     commands = {}
-    for state, config in states.items():
+    for remote_state, config in state_configs.items():
         if config['name'] is not None:
-            commands[config['name']] = transition_to_state(state)
+            commands[config['name']] = transition_to_state(remote_state)
     return commands
 
 
-def control_commands(state):
-    config = states[state]
+def state_commands(state):
+    config = state_configs[state]
     commands = global_commands()
-    if config['definition_file'] is not None:
-        commands['TKUPT'] = transition_to_state_t(state)
+    commands_t = None
 
-    commands_t = {
-        'TA*B': '{#Tab}{^}',
-        'TAB': '{#Tab}{^}',
-        'R-R': '{^\n^}' + transition_to_state(state),
-        'TPEFBG': '{#Escape}' + transition_to_state(state)
-    }
+    for stroke, command in config['transitions'].items():
+        for new_state in state_configs:
+            command = command.replace(
+                '{STACKER:' + new_state + '}', transition_to_state(new_state))
+        commands[stroke] = command
+
+    if config['definition_file'] is not None:
+        commands['TKUPT'] = transition_to_state_t(state) + \
+            '{PLOVER:ADD_TRANSLATION}'
+
+        commands_t = {
+            'TA*B': '{#Tab}{^}',
+            'TAB': '{#Tab}{^}',
+            'R-R': '{^\n^}' + transition_to_state(state),
+            'TPEFBG': '{#Escape}' + transition_to_state(state)
+        }
 
     return commands, commands_t
 
 
-for state in states:
-    commands, commands_t = control_commands(state)
+for state in state_configs:
+    commands, commands_t = state_commands(state)
     with open('./generated/' + state + '.json', 'w') as f:
-        json.dump(commands, f, indent=4)
-    with open('./generated/' + state + '_T.json', 'w') as f:
-        json.dump(commands_t, f, indent=4)
+        json.dump(commands, f, indent=2)
 
+    if commands_t is not None:
+        with open('./generated/' + state + '_T.json', 'w') as f:
+            json.dump(commands_t, f, indent=2)
